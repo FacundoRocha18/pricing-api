@@ -1,9 +1,9 @@
 import { UUID } from 'crypto';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   uuid: UUID;
 
   @Column()
@@ -14,4 +14,7 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column('timestamptz', { default: 'now' })
+  signupDate: Timestamp;
 }

@@ -22,7 +22,7 @@ dotenv.config();
       password: process.env.DATABASE_PWD,
       database: process.env.DATABASE,
       entities: [User, Report],
-      synchronize: true,
+      synchronize: true, // Don't use synchronize: true in production
     }),
   ],
   controllers: [AppController],
