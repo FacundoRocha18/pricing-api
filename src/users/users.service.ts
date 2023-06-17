@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UUID } from 'crypto';
 import { DeleteResult, Repository } from 'typeorm';
-import { CreateUserDto } from './DTOs/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 
 @Injectable()
@@ -12,8 +12,8 @@ export class UsersService {
     private repo: Repository<User>,
   ) {}
 
-  findOneById(uuid: UUID): Promise<User | null> {
-    return this.repo.findOneBy({ uuid });
+  findOneById(id: UUID): Promise<User | null> {
+    return this.repo.findOneBy({ id });
   }
 
   findOneByEmail(email: string): Promise<User | null> {

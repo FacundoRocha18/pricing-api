@@ -4,7 +4,7 @@ import { Entity, Column, PrimaryGeneratedColumn, Timestamp } from 'typeorm';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  uuid: UUID;
+  id: UUID;
 
   @Column()
   email: string;

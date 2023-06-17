@@ -6,20 +6,22 @@ import {
   NotFoundException,
   Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UUID } from 'crypto';
-import { DeleteResult } from 'typeorm';
-import { CreateUserDto } from './DTOs/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
+import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @UseInterceptors(SerializeInterceptor)
   @Get('/auth/find')
-  async findOneById(@Query('id') uuid: UUID): Promise<User> {
-    const user = await this.usersService.findOneById(uuid);
+  async findUser(@Query('id') id: UUID): Promise<User> {
+    const user = await this.usersService.findOneById(id);
 
     if (!user) {
       throw new NotFoundException('No se encontró el usuario');
