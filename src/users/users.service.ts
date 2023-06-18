@@ -12,23 +12,22 @@ export class UsersService {
     private repo: Repository<User>,
   ) {}
 
-  findOneById(id: UUID): Promise<User | null> {
+  findById(id: UUID): Promise<User | null> {
     return this.repo.findOneBy({ id });
   }
 
-  findOneByEmail(email: string): Promise<User | null> {
+  findByEmail(email: string): Promise<User | null> {
     return this.repo.findOneBy({ email });
   }
 
-  signup(body: CreateUserDto): Promise<User> {
+  create(body: CreateUserDto): Promise<User> {
     const createdUser = this.repo.create(body);
-    const savedUser = this.repo.save(createdUser);
 
-    return savedUser;
+    return this.repo.save(createdUser);
   }
 
   async update(id: UUID, attrs: Partial<User>) {
-    const user = await this.findOneById(id);
+    const user = await this.findById(id);
 
     if (!user) {
       throw new NotFoundException('No se encontró el usuario.');
@@ -40,7 +39,7 @@ export class UsersService {
   }
 
   deleteOneById(id: UUID): Promise<DeleteResult> {
-    if (!this.findOneById(id)) {
+    if (!this.findById(id)) {
       throw new NotFoundException('No se encontró el usuario');
     }
 

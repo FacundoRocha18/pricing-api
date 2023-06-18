@@ -6,22 +6,26 @@ import {
   NotFoundException,
   Post,
   Query,
-  UseInterceptors,
 } from '@nestjs/common';
 import { UUID } from 'crypto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
-import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { UserDto } from './dto/user.dto';
+import { AuthService } from './auth.service';
 
 @Controller('users')
+@Serialize(UserDto)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService,
+  ) {}
 
-  @UseInterceptors(SerializeInterceptor)
-  @Get('/auth/find')
+  @Get('/find')
   async findUser(@Query('id') id: UUID): Promise<User> {
-    const user = await this.usersService.findOneById(id);
+    const user = await this.usersService.findById(id);
 
     if (!user) {
       throw new NotFoundException('No se encontró el usuario');
@@ -30,9 +34,9 @@ export class UsersController {
     return user;
   }
 
-  @Get('/auth/find')
+  @Get('/find')
   async findOneByEmail(@Query('email') email: string): Promise<User> {
-    const user = await this.usersService.findOneByEmail(email);
+    const user = await this.usersService.findByEmail(email);
 
     if (!user) {
       throw new NotFoundException('No se encontró el usuario');
@@ -42,10 +46,15 @@ export class UsersController {
   }
 
   @Post('/auth/signup')
-  async signup(@Body() createUserDto: CreateUserDto): Promise<User> {
-    const user = await this.usersService.signup(createUserDto);
+  async signup(@Body() body: CreateUserDto): Promise<User> {
+    const user = await this.authService.signup(body);
 
     return user;
+  }
+
+  @Post('/auth/signin')
+  signin(@Body() { email, password }: Partial<CreateUserDto>): Promise<User> {
+    return this.authService.signin(email, password);
   }
 
   @Delete('/auth/delete')
