@@ -15,7 +15,7 @@ import { User } from './user.entity';
 import { UsersService } from './users.service';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from './dto/user.dto';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../../auth/auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { AuthGuard } from 'src/guards/auth.guard';
 
