@@ -7,6 +7,7 @@ import {
   Post,
   Query,
   Session,
+  UseGuards,
 } from '@nestjs/common';
 import { UUID } from 'crypto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -15,8 +16,8 @@ import { UsersService } from './users.service';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from './dto/user.dto';
 import { AuthService } from './auth.service';
-import { IResponse, IResponseData } from 'src/interfaces/responses';
 import { CurrentUser } from './decorators/current-user.decorator';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('users')
 @Serialize(UserDto)
@@ -48,6 +49,11 @@ export class UsersController {
     return user;
   }
 
+  @Get('/list')
+  async listUsers(): Promise<User[]> {
+    return await this.usersService.listUsers();
+  }
+
   @Post('/auth/signup')
   async signUp(
     @Body() body: CreateUserDto,
@@ -71,22 +77,7 @@ export class UsersController {
   }
 
   @Get('/auth/identify')
-  identify(@Session() session: any): Promise<User> {
-    const user = this.usersService.findById(session.id);
-
-    if (!user) {
-      throw new NotFoundException('No existe una sesión activa.');
-    }
-
-    return user;
-  }
-
-  @Get('/auth/whoami')
-  whoAmI(@CurrentUser() user: string): string {
-    if (!user) {
-      throw new NotFoundException('No existe una sesión activa.');
-    }
-
+  identify(@CurrentUser() user: User): User {
     return user;
   }
 
@@ -95,8 +86,9 @@ export class UsersController {
     session.id = null;
   }
 
+  @UseGuards(AuthGuard)
   @Delete('/delete')
-  async deleteOneById(@Query('id') id: UUID) {
+  async deleteOneById(@Query('id') id: UUID): Promise<number> {
     const queryResult = await this.usersService.deleteOneById(id);
 
     return queryResult.affected;

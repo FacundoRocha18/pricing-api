@@ -4,8 +4,6 @@ export const CurrentUser = createParamDecorator(
   (data: any, context: ExecutionContext) => {
     const request = context.switchToHttp().getRequest();
 
-    console.log(request.session.id);
-
-    return 'Howdy!';
+    return request.CurrentUser;
   },
 );

@@ -24,6 +24,10 @@ export class UsersService {
     return this.repo.findOneBy({ email });
   }
 
+  listUsers(): Promise<User[]> {
+    return this.repo.find();
+  }
+
   create(body: CreateUserDto): Promise<User> {
     const createdUser = this.repo.create(body);
 
