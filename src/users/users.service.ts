@@ -12,7 +12,11 @@ export class UsersService {
     private repo: Repository<User>,
   ) {}
 
-  findById(id: UUID): Promise<User | null> {
+  findById(id: UUID): Promise<User> {
+    if (!id) {
+      return null;
+    }
+
     return this.repo.findOneBy({ id });
   }
 
