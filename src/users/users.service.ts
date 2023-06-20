@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UUID } from 'crypto';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, FindOptionsWhere, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 
@@ -12,20 +12,8 @@ export class UsersService {
     private repo: Repository<User>,
   ) {}
 
-  findById(id: UUID): Promise<User> {
-    if (!id) {
-      return null;
-    }
-
-    return this.repo.findOneBy({ id });
-  }
-
-  findByEmail(email: string): Promise<User | null> {
-    return this.repo.findOneBy({ email });
-  }
-
-  listUsers(): Promise<User[]> {
-    return this.repo.find();
+  find(findOptions: FindOptionsWhere<User>): Promise<User[]> {
+    return this.repo.find({ where: findOptions });
   }
 
   create(body: CreateUserDto): Promise<User> {
@@ -35,7 +23,7 @@ export class UsersService {
   }
 
   async update(id: UUID, attrs: Partial<User>) {
-    const user = await this.findById(id);
+    const [user] = await this.find({ id });
 
     if (!user) {
       throw new NotFoundException('No se encontró el usuario.');
@@ -47,7 +35,7 @@ export class UsersService {
   }
 
   deleteOneById(id: UUID): Promise<DeleteResult> {
-    if (!this.findById(id)) {
+    if (!this.find({ id })) {
       throw new NotFoundException('No se encontró el usuario');
     }
 

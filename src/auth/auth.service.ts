@@ -12,9 +12,9 @@ export class AuthService {
   constructor(private usersService: UsersService) {}
 
   async signup({ email, name, password }: CreateUserDto) {
-    const storedUser = await this.usersService.findByEmail(email);
+    const users = await this.usersService.find({ email });
 
-    if (storedUser) {
+    if (users.length > 0) {
       throw new BadRequestException('Ese email ya está registrado.');
     }
 

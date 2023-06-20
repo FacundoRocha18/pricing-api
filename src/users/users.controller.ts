@@ -46,7 +46,7 @@ export class UsersController {
 
   @Get('/list')
   async listUsers(): Promise<User[]> {
-    return await this.usersService.listUsers();
+    return await this.usersService.find({});
   }
 
   @UseGuards(AuthGuard)
