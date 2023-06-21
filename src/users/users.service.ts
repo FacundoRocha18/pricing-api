@@ -13,6 +13,8 @@ export class UsersService {
   ) {}
 
   find(findOptions: FindOptionsWhere<User>): Promise<User[]> {
+    if (!findOptions) return Promise.resolve([]);
+
     return this.repo.find({ where: findOptions });
   }
 
