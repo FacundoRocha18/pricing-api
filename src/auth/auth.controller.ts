@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Session } from '@nestjs/common';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { User } from '../users/user.entity';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from '../users/dto/user.dto';
 import { AuthService } from './auth.service';
 import { CurrentUser } from '../users/decorators/current-user.decorator';

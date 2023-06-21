@@ -23,13 +23,7 @@ export class UsersController {
 
   @Get('/find')
   async findUser(@Body() query: FindOptionsWhere<User>): Promise<User> {
-    const [user] = await this.usersService.find(query);
-
-    if (!user) {
-      throw new NotFoundException('No se encontró el usuario');
-    }
-
-    return user;
+    return await this.usersService.find(query)[0];
   }
 
   @Get('/list')
@@ -38,9 +32,7 @@ export class UsersController {
   }
 
   @Delete('/delete')
-  async deleteOneById(@Query('id') id: UUID): Promise<number> {
-    const queryResult = await this.usersService.deleteOneById(id);
-
-    return queryResult.affected;
+  async deleteOneById(@Query('id') id: UUID): Promise<UUID> {
+    return await this.usersService.delete(id);
   }
 }
