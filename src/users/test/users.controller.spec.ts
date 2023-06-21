@@ -29,13 +29,15 @@ describe('Tests for UsersController', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
+      providers: [
+        {
+          provide: UsersService,
+          useValue: usersServiceMock,
+        },
+      ],
     }).compile();
 
     controller = module.get<UsersController>(UsersController);
-  });
-
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
   });
 
   it('should be defined', () => {
