@@ -21,7 +21,7 @@ export const compareHashedPassword = async (
 ): Promise<boolean> => {
   const [storedSalt, storedHash] = storedPassword.split('.');
 
-  const [salt, hash] = (await hashPassword(password, storedSalt)).split('.');
+  const hash = (await hashPassword(password, storedSalt)).split('.')[1];
 
   return storedHash === hash;
 };
