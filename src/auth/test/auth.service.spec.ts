@@ -9,14 +9,6 @@ describe('Tests for AuthService', () => {
   let service: AuthService;
   let usersServiceMock: Partial<UsersService>;
 
-  const userDataSample = {
-    id: 'bf229f23-48f6-4dbc-b44d-2732f855ec7d',
-    email: 'test@test.com',
-    name: 'Test',
-    password:
-      '802d53df43c64b02.3cc5af59d428bbc8a5380bd85dc0d29bb2be990f4c0cdb0af1822bbbc65e45c3d17aa91ae7f548731fd3b3b9612b1d5725913873ba35f8f84022f414f9ad6229',
-  };
-
   beforeEach(async () => {
     const users: User[] = [];
     usersServiceMock = {
@@ -52,11 +44,15 @@ describe('Tests for AuthService', () => {
   });
 
   it('Should create a new user with a salted and hashed password', async () => {
-    const user = await service.signup(userDataSample);
+    const user = await service.signup({
+      email: 'test@test.com',
+      name: 'Test',
+      password: 'Password1234!',
+    });
 
     const [salt, hash] = user.password.split('.');
 
-    expect(user.password).not.toEqual(userDataSample.password);
+    expect(user.password).not.toEqual('Password1234!');
     expect(salt).toBeDefined();
     expect(hash).toBeDefined();
   });
