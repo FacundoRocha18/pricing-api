@@ -9,13 +9,11 @@ import { User } from './user.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private repo: Repository<User>,
+    private repository: Repository<User>,
   ) {}
 
-  find(findOptions: FindOptionsWhere<User>): Promise<User[]> {
-    if (!findOptions) return Promise.resolve([]);
-
-    const user = this.repo.find({ where: findOptions });
+  async findById(id: UUID): Promise<User> {
+    const user = await this.repository.findOneBy({ id });
 
     if (!user) {
       throw new NotFoundException('No se encontró el usuario');
@@ -24,14 +22,34 @@ export class UsersService {
     return user;
   }
 
-  create(body: CreateUserDto): Promise<User> {
-    const createdUser = this.repo.create(body);
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.repository.findOneBy({ email });
 
-    return this.repo.save(createdUser);
+    if (!user) {
+      throw new NotFoundException('No se encontró el usuario');
+    }
+
+    return user;
+  }
+
+  async listAll(options?: FindOptionsWhere<User>): Promise<User[]> {
+    const users = await this.repository.find({ where: options });
+
+    if (users.length === 0) {
+      throw new NotFoundException('No se encontró el usuario');
+    }
+
+    return users;
+  }
+
+  create(body: CreateUserDto): Promise<User> {
+    const createdUser = this.repository.create(body);
+
+    return this.repository.save(createdUser);
   }
 
   async update(id: UUID, attrs: Partial<User>) {
-    const [user] = await this.find({ id });
+    const user = await this.findById(id);
 
     if (!user) {
       throw new NotFoundException('No se encontró el usuario.');
@@ -39,15 +57,15 @@ export class UsersService {
 
     Object.assign(user, attrs);
 
-    return this.repo.save(user);
+    return this.repository.save(user);
   }
 
   delete(id: UUID): UUID {
-    if (!this.find({ id })) {
+    if (!this.listAll({ id })) {
       throw new NotFoundException('No se encontró el usuario');
     }
 
-    this.repo.delete(id);
+    this.repository.delete(id);
 
     return id;
   }

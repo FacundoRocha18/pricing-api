@@ -3,6 +3,7 @@ import { UsersController } from '../users.controller';
 import { UsersService } from '../users.service';
 import { UUID, randomUUID } from 'crypto';
 import { User } from '../user.entity';
+import { hashPassword } from '../../utils';
 
 describe('Tests for UsersController', () => {
   let controller: UsersController;
@@ -11,7 +12,7 @@ describe('Tests for UsersController', () => {
   beforeEach(async () => {
     const users: User[] = [];
     usersServiceMock = {
-      find: ({ email }) => {
+      listAll: ({ email }) => {
         const filteredUsers = users.filter((user) => user.email === email);
 
         return Promise.resolve(filteredUsers);
@@ -42,5 +43,18 @@ describe('Tests for UsersController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  it('findUser should return the user with the provided email', async () => {
+    await controller.create({
+      email: 'test@test.com',
+      name: 'Test',
+      password: await hashPassword('Password1234!'),
+    });
+
+    const user = await controller.findUserById({ email: 'test@test.com' });
+
+    console.log(user);
+    expect(user.email).toEqual('test@test.com');
   });
 });

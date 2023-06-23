@@ -14,7 +14,7 @@ describe('Tests on AuthController', () => {
     const users: User[] = [];
 
     usersServiceMock = {
-      find: ({ email }) => {
+      listAll: ({ email }) => {
         const filteredUsers = users.filter((user) => user.email === email);
 
         return Promise.resolve(filteredUsers);

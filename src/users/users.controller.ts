@@ -3,17 +3,19 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
 import { UUID } from 'crypto';
-import { User } from './user.entity';
-import { UsersService } from './users.service';
-import { Serialize } from '../interceptors/serialize.interceptor';
-import { UserDto } from './dto/user.dto';
-import { AuthGuard } from '../guards/auth.guard';
 import { FindOptionsWhere } from 'typeorm';
+import { Serialize } from '../interceptors/serialize.interceptor';
+import { AuthGuard } from '../guards/auth.guard';
+import { UsersService } from './users.service';
+import { User } from './user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UserDto } from './dto/user.dto';
+import { hashPassword } from '../utils';
 
 @Controller('users')
 @UseGuards(AuthGuard)
@@ -22,17 +24,32 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('/find')
-  async findUser(@Body() query: FindOptionsWhere<User>): Promise<User> {
-    return await this.usersService.find(query)[0];
+  async findUserById(@Query('id') id: UUID): Promise<User> {
+    return await this.usersService.findById(id);
+  }
+
+  @Get('/find')
+  async findUserByEmail(@Query('email') email: string): Promise<User> {
+    return await this.usersService.findByEmail(email);
   }
 
   @Get('/list')
   async listUsers(): Promise<User[]> {
-    return await this.usersService.find({});
+    return await this.usersService.listAll();
+  }
+
+  @Post('/create')
+  async create(@Body() body: CreateUserDto): Promise<User> {
+    const hashedPassword = await hashPassword(body.password);
+
+    return await this.usersService.create({
+      ...body,
+      password: hashedPassword,
+    });
   }
 
   @Delete('/delete')
-  async deleteOneById(@Query('id') id: UUID): Promise<UUID> {
-    return await this.usersService.delete(id);
+  deleteOneById(@Query('id') id: UUID): UUID {
+    return this.usersService.delete(id);
   }
 }
