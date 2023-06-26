@@ -35,11 +35,11 @@ export class UsersController {
 
   @Get('/list')
   async listUsers(): Promise<User[]> {
-    return await this.usersService.listAll();
+    return await this.usersService.findAll();
   }
 
   @Post('/create')
-  async create(@Body() body: CreateUserDto): Promise<User> {
+  async createUser(@Body() body: CreateUserDto): Promise<User> {
     const hashedPassword = await hashPassword(body.password);
 
     return await this.usersService.create({
@@ -49,7 +49,7 @@ export class UsersController {
   }
 
   @Delete('/delete')
-  deleteOneById(@Query('id') id: UUID): UUID {
+  deleteUser(@Query('id') id: UUID): UUID {
     return this.usersService.delete(id);
   }
 }

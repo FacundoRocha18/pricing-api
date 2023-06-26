@@ -8,15 +8,23 @@ import { hashPassword } from '../../utils';
 describe('Tests for UsersController', () => {
   let controller: UsersController;
   let usersServiceMock: Partial<UsersService>;
+  let testUser: User;
 
   beforeEach(async () => {
     const users: User[] = [];
-    usersServiceMock = {
-      listAll: ({ email }) => {
-        const filteredUsers = users.filter((user) => user.email === email);
 
-        return Promise.resolve(filteredUsers);
+    usersServiceMock = {
+      findByEmail: (email: string) => {
+        const [filteredUser] = users.filter((user) => user.email === email);
+
+        return Promise.resolve(filteredUser);
       },
+      findById: (id: UUID) => {
+        const [filteredUser] = users.filter((user) => user.id === id);
+
+        return Promise.resolve(filteredUser);
+      },
+      findAll: () => Promise.resolve(users),
       create: ({ email, name, password }) => {
         const user = { id: randomUUID(), email, name, password };
 
@@ -39,22 +47,53 @@ describe('Tests for UsersController', () => {
     }).compile();
 
     controller = module.get<UsersController>(UsersController);
+
+    testUser = await controller.createUser({
+      email: 'test@test.com',
+      name: 'Test',
+      password: await hashPassword('Password1234!'),
+    });
   });
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 
-  it('findUser should return the user with the provided email', async () => {
-    await controller.create({
+  it('findUserById() should return the user that matches the provided id', async () => {
+    const user = await controller.findUserById(testUser.id);
+
+    expect(user).toBeDefined();
+    expect(user.id).toEqual(testUser.id);
+  });
+
+  it('findUserByEmail() should return the user that matches the provided email', async () => {
+    const user = await controller.findUserByEmail(testUser.email);
+
+    expect(user).toBeDefined();
+    expect(user.email).toEqual(testUser.email);
+  });
+
+  it('listUsers() should return all users', async () => {
+    const user = await controller.listUsers();
+
+    expect(user).toBeDefined();
+    expect(user.length).toBeGreaterThan(0);
+  });
+
+  it('listUser() should create a new user and return it', async () => {
+    const user = await controller.createUser({
       email: 'test@test.com',
       name: 'Test',
-      password: await hashPassword('Password1234!'),
+      password: 'Password1234!',
     });
 
-    const user = await controller.findUserById({ email: 'test@test.com' });
+    const { password } = await controller.findUserById(user.id);
 
-    console.log(user);
+    const [salt, hash] = password.split('.');
+
+    expect(user).toBeDefined();
     expect(user.email).toEqual('test@test.com');
+    expect(user.name).toEqual('Test');
+    expect(user.password).toEqual(await hashPassword('Password1234!', salt));
   });
 });

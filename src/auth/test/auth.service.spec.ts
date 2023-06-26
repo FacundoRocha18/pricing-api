@@ -12,7 +12,7 @@ describe('Tests for AuthService', () => {
   beforeEach(async () => {
     const users: User[] = [];
     usersServiceMock = {
-      listAll: ({ email }) => {
+      findByEmail: ({ email }) => {
         const filteredUsers = users.filter((user) => user.email === email);
 
         return Promise.resolve(filteredUsers);

@@ -32,7 +32,7 @@ export class UsersService {
     return user;
   }
 
-  async listAll(options?: FindOptionsWhere<User>): Promise<User[]> {
+  async findAll(options?: FindOptionsWhere<User>): Promise<User[]> {
     const users = await this.repository.find({ where: options });
 
     if (users.length === 0) {
@@ -61,7 +61,7 @@ export class UsersService {
   }
 
   delete(id: UUID): UUID {
-    if (!this.listAll({ id })) {
+    if (!this.findById(id)) {
       throw new NotFoundException('No se encontró el usuario');
     }
 
