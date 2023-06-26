@@ -80,7 +80,7 @@ describe('Tests for UsersController', () => {
     expect(user.length).toBeGreaterThan(0);
   });
 
-  it('listUser() should create a new user and return it', async () => {
+  it('createUser() should create a new user and return it', async () => {
     const user = await controller.createUser({
       email: 'test@test.com',
       name: 'Test',
