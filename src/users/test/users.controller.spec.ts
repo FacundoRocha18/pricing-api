@@ -89,7 +89,7 @@ describe('Tests for UsersController', () => {
 
     const { password } = await controller.findUserById(user.id);
 
-    const [salt, hash] = password.split('.');
+    const [salt] = password.split('.');
 
     expect(user).toBeDefined();
     expect(user.email).toEqual('test@test.com');
