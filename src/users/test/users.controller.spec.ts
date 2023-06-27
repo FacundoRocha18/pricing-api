@@ -4,6 +4,7 @@ import { UsersService } from '../users.service';
 import { UUID, randomUUID } from 'crypto';
 import { User } from '../user.entity';
 import { hashPassword } from '../../utils';
+import { NotFoundException } from '@nestjs/common';
 
 describe('Tests for UsersController', () => {
   let controller: UsersController;
