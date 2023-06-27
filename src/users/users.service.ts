@@ -4,6 +4,7 @@ import { UUID } from 'crypto';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
+import { hashPassword } from '../utils';
 
 @Injectable()
 export class UsersService {
@@ -42,10 +43,11 @@ export class UsersService {
     return users;
   }
 
-  create(body: CreateUserDto): Promise<User> {
-    const createdUser = this.repository.create(body);
+  async create({ email, name, password }: CreateUserDto): Promise<User> {
+    const hash = await hashPassword(password);
+    const user = this.repository.create({ email, name, password: hash });
 
-    return this.repository.save(createdUser);
+    return this.repository.save(user);
   }
 
   async update(id: UUID, attrs: Partial<User>) {

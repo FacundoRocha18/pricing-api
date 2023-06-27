@@ -8,14 +8,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UUID } from 'crypto';
-import { FindOptionsWhere } from 'typeorm';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { AuthGuard } from '../guards/auth.guard';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserDto } from './dto/user.dto';
-import { hashPassword } from '../utils';
 
 @Controller('users')
 @UseGuards(AuthGuard)
@@ -40,12 +38,7 @@ export class UsersController {
 
   @Post('/create')
   async createUser(@Body() body: CreateUserDto): Promise<User> {
-    const hashedPassword = await hashPassword(body.password);
-
-    return await this.usersService.create({
-      ...body,
-      password: hashedPassword,
-    });
+    return await this.usersService.create(body);
   }
 
   @Delete('/delete')

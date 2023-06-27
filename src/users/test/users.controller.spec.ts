@@ -4,7 +4,6 @@ import { UsersService } from '../users.service';
 import { UUID, randomUUID } from 'crypto';
 import { User } from '../user.entity';
 import { hashPassword } from '../../utils';
-import { NotFoundException } from '@nestjs/common';
 
 describe('Tests for UsersController', () => {
   let controller: UsersController;
@@ -25,8 +24,13 @@ describe('Tests for UsersController', () => {
         return Promise.resolve(filteredUser);
       },
       findAll: () => Promise.resolve(users),
-      create: ({ email, name, password }) => {
-        const user = { id: randomUUID(), email, name, password };
+      create: async ({ email, name, password }) => {
+        const user = {
+          id: randomUUID(),
+          email,
+          name,
+          password: await hashPassword(password),
+        };
 
         users.push(user);
 
@@ -78,10 +82,10 @@ describe('Tests for UsersController', () => {
   });
 
   it('listUsers() should return all users', async () => {
-    const user = await controller.listUsers();
+    const users = await controller.listUsers();
 
-    expect(user).toBeDefined();
-    expect(user.length).toBeGreaterThan(0);
+    expect(users).toBeDefined();
+    expect(users.length).toBeGreaterThan(0);
   });
 
   it('createUser() should create a new user and return it', async () => {
@@ -92,13 +96,13 @@ describe('Tests for UsersController', () => {
     });
 
     const { password } = await controller.findUserById(user.id);
-
     const [salt] = password.split('.');
+    const hashedPassword = await hashPassword('Password1234!', salt);
 
     expect(user).toBeDefined();
     expect(user.email).toEqual('test@test.com');
     expect(user.name).toEqual('Test');
-    expect(user.password).toEqual(await hashPassword('Password1234!', salt));
+    expect(user.password).toEqual(hashedPassword);
   });
 
   it('deleteUser() should delete the user matching the provided id', async () => {
