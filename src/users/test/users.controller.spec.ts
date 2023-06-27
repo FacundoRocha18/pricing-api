@@ -4,15 +4,15 @@ import { UsersService } from '../users.service';
 import { UUID, randomUUID } from 'crypto';
 import { User } from '../user.entity';
 import { hashPassword } from '../../utils';
+import { NotFoundException } from '@nestjs/common';
 
 describe('Tests for UsersController', () => {
   let controller: UsersController;
   let usersServiceMock: Partial<UsersService>;
   let testUser: User;
+  let users: User[] = [];
 
   beforeEach(async () => {
-    const users: User[] = [];
-
     usersServiceMock = {
       findByEmail: (email: string) => {
         const [filteredUser] = users.filter((user) => user.email === email);
@@ -33,7 +33,11 @@ describe('Tests for UsersController', () => {
         return Promise.resolve(user);
       },
       update: (id: UUID, attrs: Partial<User>) => Promise.resolve({} as User),
-      delete: (id: UUID) => id,
+      delete: (id: UUID) => {
+        users = users.filter((user) => user.id != id);
+
+        return id;
+      },
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -95,5 +99,13 @@ describe('Tests for UsersController', () => {
     expect(user.email).toEqual('test@test.com');
     expect(user.name).toEqual('Test');
     expect(user.password).toEqual(await hashPassword('Password1234!', salt));
+  });
+
+  it('deleteUser() should delete the user matching the provided id', async () => {
+    const deletedUserId = controller.deleteUser(testUser.id);
+    const user = await controller.findUserById(deletedUserId);
+
+    expect(deletedUserId).toBeDefined();
+    expect(users).not.toContain(user);
   });
 });

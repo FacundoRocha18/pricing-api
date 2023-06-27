@@ -12,10 +12,10 @@ describe('Tests for AuthService', () => {
   beforeEach(async () => {
     const users: User[] = [];
     usersServiceMock = {
-      findByEmail: ({ email }) => {
-        const filteredUsers = users.filter((user) => user.email === email);
+      findByEmail: (email: string) => {
+        const [user] = users.filter((user) => user.email === email);
 
-        return Promise.resolve(filteredUsers);
+        return Promise.resolve(user);
       },
       create: ({ email, name, password }) => {
         const user = { id: randomUUID(), email, name, password };
