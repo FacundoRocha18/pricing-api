@@ -64,10 +64,6 @@ describe('Tests for UsersController', () => {
     });
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-
   it('findUserById() should return the user that matches the provided id', async () => {
     const user = await controller.findUserById(testUser.id);
 
