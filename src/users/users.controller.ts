@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Post,
   Query,
   UseGuards,
@@ -43,6 +44,8 @@ export class UsersController {
 
   @Delete('/delete')
   deleteUser(@Query('id') id: UUID): UUID {
-    return this.usersService.delete(id);
+    const deletedUserId = this.usersService.delete(id);
+
+    return deletedUserId;
   }
 }

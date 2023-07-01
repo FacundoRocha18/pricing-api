@@ -17,6 +17,7 @@ export class AuthController {
     @Session() session: any,
   ): Promise<User> {
     const user = await this.authService.signup(body);
+
     session.id = user.id;
 
     return user;

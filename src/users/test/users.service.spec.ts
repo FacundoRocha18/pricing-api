@@ -3,9 +3,9 @@ import { UsersService } from '../users.service';
 import { hashPassword } from '../../utils';
 import { User } from '../user.entity';
 
-describe('UsersService', () => {
-  let service: UsersService;
+describe('Tests for UsersService', () => {
   let testUser: User;
+  let service: UsersService;
 
   beforeEach(async () => {
     const users: User[] = [];

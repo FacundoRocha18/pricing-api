@@ -33,14 +33,18 @@ export class UsersService {
     return user;
   }
 
+  async findByEmailWithoutValidation(email: string): Promise<User> {
+    return await this.repository.findOneBy({ email });
+  }
+
   async findAll(options?: FindOptionsWhere<User>): Promise<User[]> {
     const users = await this.repository.find({ where: options });
 
     if (users.length === 0) {
-      throw new NotFoundException('No se encontró el usuario');
+      throw new NotFoundException('No se encontraron usuarios');
     }
 
-    return users;
+    return;
   }
 
   async create({ email, name, password }: CreateUserDto): Promise<User> {
