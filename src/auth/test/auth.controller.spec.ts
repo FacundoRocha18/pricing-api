@@ -5,14 +5,23 @@ import { User } from '../../users/user.entity';
 import { UsersService } from '../../users/users.service';
 import { UUID, randomUUID } from 'crypto';
 import { hashPassword } from '../../utils';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 describe('Tests on AuthController', () => {
   let controller: AuthController;
   let authServiceMock: Partial<AuthService>;
   let usersServiceMock: Partial<UsersService>;
-  let users: User[] = [];
+
+  const testUserData: User = {
+    id: 'bf229f23-48f6-4dbc-b44d-2732f855ec7d',
+    email: 'test@test.com',
+    name: 'Test Test',
+    password: 'Password1234!',
+  };
 
   beforeEach(async () => {
+    let users: User[] = [];
+
     usersServiceMock = {
       findByEmail: (email: string) => {
         const [filteredUser] = users.filter((user) => user.email === email);
@@ -46,9 +55,21 @@ describe('Tests on AuthController', () => {
     };
 
     authServiceMock = {
-      signup: () => Promise.resolve({} as User),
+      signup: ({ email, name, password }: CreateUserDto) => {
+        return Promise.resolve({
+          id: 'bf229f23-48f6-4dbc-b44d-2732f855ec7d',
+          email,
+          name,
+          password,
+        } as User);
+      },
       signin: (email: string, password: string) => {
-        return Promise.resolve({ id: randomUUID(), email, password } as User);
+        return Promise.resolve({
+          id: 'bf229f23-48f6-4dbc-b44d-2732f855ec7d',
+          email,
+          name: 'Test Test',
+          password,
+        } as User);
       },
     };
 
@@ -69,12 +90,38 @@ describe('Tests on AuthController', () => {
     controller = module.get<AuthController>(AuthController);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  it('signUp() should create a new user and return session object and return user data', async () => {
+    const session = { id: '' };
+    const user = await controller.signIn(testUserData, session);
+
+    expect(user).toEqual(testUserData);
+    expect(session.id).toEqual(testUserData.id);
   });
 
-  it('signin() should update session object and return user data', async () => {
-    const session = {};
-    expect(controller).toBeDefined();
+  it('signIn() should update session object and return user data', async () => {
+    const session = { id: '' };
+    const user = await controller.signIn(
+      {
+        email: 'test@test.com',
+        password: 'Password1234!',
+      },
+      session,
+    );
+
+    expect(user.id).toEqual(testUserData.id);
+    expect(session.id).toEqual(testUserData.id);
+  });
+
+  it('identify() should return the current session user', () => {
+    const user = controller.identify(testUserData);
+
+    expect(user).toEqual(testUserData);
+  });
+
+  it('signOut() should update session object and return null', () => {
+    const session = { id: 'bf229f23-48f6-4dbc-b44d-2732f855ec7d' };
+    controller.signOut(session);
+
+    expect(session.id).toEqual(null);
   });
 });
