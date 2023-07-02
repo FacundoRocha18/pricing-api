@@ -8,7 +8,9 @@ export class AuthService {
   constructor(private usersService: UsersService) {}
 
   async signup({ email, name, password }: CreateUserDto) {
-    const user = await this.usersService.findByEmailWithoutValidation(email);
+    const user = await this.usersService.findUserByEmailWithoutValidation(
+      email,
+    );
 
     if (user) {
       throw new BadRequestException('Ese email ya está registrado.');
@@ -26,7 +28,11 @@ export class AuthService {
   }
 
   async signin(email: string, password: string) {
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.usersService.findUserByEmailWithoutValidation(
+      email,
+    );
+
+    console.log(user);
 
     if (!user) {
       throw new BadRequestException(
@@ -34,11 +40,17 @@ export class AuthService {
       );
     }
 
+    console.log('passed');
+
     const compareResult = await compareHashedPassword(user.password, password);
+
+    console.log(compareResult);
 
     if (!compareResult) {
       throw new BadRequestException('La contraseña es incorrecta');
     }
+
+    console.log('passed');
 
     return user;
   }

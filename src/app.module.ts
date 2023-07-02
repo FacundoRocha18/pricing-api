@@ -1,29 +1,55 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
+import { APP_PIPE } from '@nestjs/core';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/user.entity';
 import { Report } from './reports/report.entity';
-const dotenv = require('dotenv');
-dotenv.config();
+const cookieSession = require('cookie-session');
 
 @Module({
   imports: [
     UsersModule,
     ReportsModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DATABASE_HOST,
-      port: 5432,
-      username: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PWD,
-      database: process.env.DATABASE,
-      entities: [User, Report],
-      synchronize: true, // Don't use synchronize: true in production
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV}`,
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return {
+          type: 'postgres',
+          username: 'postgres',
+          host: config.get<string>('DATABASE_HOST'),
+          password: config.get<string>('DATABASE_PWD'),
+          database: config.get<string>('DATABASE'),
+          entities: [User, Report],
+          synchronize: true, // Don't use synchronize: true in production
+        };
+      },
     }),
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({
+        whitelist: true,
+      }),
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        cookieSession({
+          keys: ['awjdi21'],
+        }),
+      )
+      .forRoutes('*');
+  }
+}

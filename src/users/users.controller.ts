@@ -3,7 +3,7 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -42,10 +42,16 @@ export class UsersController {
     return await this.usersService.create(body);
   }
 
+  @Patch('/create')
+  async updateUser(
+    @Query('id') id: UUID,
+    @Body() body: Partial<CreateUserDto>,
+  ): Promise<User> {
+    return await this.usersService.update(id, body);
+  }
+
   @Delete('/delete')
   deleteUser(@Query('id') id: UUID): UUID {
-    const deletedUserId = this.usersService.delete(id);
-
-    return deletedUserId;
+    return this.usersService.delete(id);
   }
 }

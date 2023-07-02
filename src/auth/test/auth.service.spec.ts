@@ -12,7 +12,7 @@ describe('Tests for AuthService', () => {
   beforeEach(async () => {
     const users: User[] = [];
     usersServiceMock = {
-      findByEmail: (email: string) => {
+      findUserByEmailWithoutValidation: (email: string) => {
         const [user] = users.filter((user) => user.email === email);
 
         return Promise.resolve(user);

@@ -36,7 +36,13 @@ describe('Tests for UsersController', () => {
 
         return Promise.resolve(user);
       },
-      update: (id: UUID, attrs: Partial<User>) => Promise.resolve({} as User),
+      update: (id: UUID, attrs: Partial<User>) => {
+        const user = usersServiceMock.findById(id);
+
+        console.log(user);
+
+        return Promise.resolve({} as User);
+      },
       delete: (id: UUID) => {
         users = users.filter((user) => user.id != id);
 
@@ -107,5 +113,18 @@ describe('Tests for UsersController', () => {
 
     expect(deletedUserId).toBeDefined();
     expect(users).not.toContain(user);
+  });
+
+  it('updateUser() should update the user data', async () => {
+    const id = testUser.id;
+    const user = await controller.findUserById(id);
+
+    const updatedUser = await controller.updateUser(id, {
+      email: 'test2@test.com',
+      name: 'Test 2',
+    });
+
+    expect(user).toBeDefined();
+    expect(updatedUser).not.toEqual(testUser);
   });
 });

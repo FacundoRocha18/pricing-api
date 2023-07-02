@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from '../users.service';
-import { hashPassword } from '../../utils';
 import { User } from '../user.entity';
 
 describe('Tests for UsersService', () => {
@@ -8,8 +7,6 @@ describe('Tests for UsersService', () => {
   let service: UsersService;
 
   beforeEach(async () => {
-    const users: User[] = [];
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [UsersService],
     }).compile();

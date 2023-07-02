@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UUID } from 'crypto';
 import { FindOptionsWhere, Repository } from 'typeorm';
@@ -26,6 +30,8 @@ export class UsersService {
   async findByEmail(email: string): Promise<User> {
     const user = await this.repository.findOneBy({ email });
 
+    console.log(user);
+
     if (!user) {
       throw new NotFoundException('No se encontró el usuario');
     }
@@ -33,7 +39,7 @@ export class UsersService {
     return user;
   }
 
-  async findByEmailWithoutValidation(email: string): Promise<User> {
+  async findUserByEmailWithoutValidation(email: string): Promise<User> {
     return await this.repository.findOneBy({ email });
   }
 
@@ -48,6 +54,12 @@ export class UsersService {
   }
 
   async create({ email, name, password }: CreateUserDto): Promise<User> {
+    const storedUser = await this.findUserByEmailWithoutValidation(email);
+
+    if (storedUser) {
+      throw new BadRequestException('Ese email ya está registrado.');
+    }
+
     const hash = await hashPassword(password);
     const user = this.repository.create({ email, name, password: hash });
 
