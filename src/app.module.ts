@@ -25,7 +25,7 @@ const cookieSession = require('cookie-session');
           username: 'postgres',
           host: config.get<string>('DATABASE_HOST'),
           password: config.get<string>('DATABASE_PWD'),
-          database: config.get<string>('DATABASE'),
+          database: 'postgres',
           entities: [User, Report],
           synchronize: true, // Don't use synchronize: true in production
         };
