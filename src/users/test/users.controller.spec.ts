@@ -39,8 +39,6 @@ describe('Tests for UsersController', () => {
       update: (id: UUID, attrs: Partial<User>) => {
         const user = usersServiceMock.findById(id);
 
-        console.log(user);
-
         return Promise.resolve({} as User);
       },
       delete: (id: UUID) => {

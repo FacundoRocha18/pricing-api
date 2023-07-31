@@ -7,12 +7,14 @@ import { ReportsModule } from './reports/reports.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/user.entity';
 import { Report } from './reports/report.entity';
+import { AuthModule } from './auth/auth.module';
 const cookieSession = require('cookie-session');
 
 @Module({
   imports: [
     UsersModule,
     ReportsModule,
+    AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,

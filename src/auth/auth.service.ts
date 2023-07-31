@@ -32,25 +32,17 @@ export class AuthService {
       email,
     );
 
-    console.log(user);
-
     if (!user) {
       throw new BadRequestException(
         'No existe un usuario registrado con ese email.',
       );
     }
 
-    console.log('passed');
-
     const compareResult = await compareHashedPassword(user.password, password);
-
-    console.log(compareResult);
 
     if (!compareResult) {
       throw new BadRequestException('La contraseña es incorrecta');
     }
-
-    console.log('passed');
 
     return user;
   }
