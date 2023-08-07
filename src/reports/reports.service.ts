@@ -13,7 +13,7 @@ export class ReportsService {
   ) {}
 
   async findOne(id: UUID): Promise<Report> {
-    const report = this.repository.findOneBy({ id });
+    const report = await this.repository.findOneBy({ id });
 
     if (!report) {
       throw new NotFoundException('No se encontró el reporte');
@@ -34,6 +34,18 @@ export class ReportsService {
 
   async create(body: CreateReportDto): Promise<Report> {
     const report = this.repository.create(body);
+
+    return this.repository.save(report);
+  }
+
+  async update(id: UUID, attrs: Partial<Report>) {
+    const report = await this.findOne(id);
+
+    if (!report) {
+      throw new NotFoundException('No se encontró el reporte.');
+    }
+
+    Object.assign(report, attrs);
 
     return this.repository.save(report);
   }

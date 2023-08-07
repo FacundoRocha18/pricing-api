@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/create-report.dto';
 import { AuthGuard } from '../guards/auth.guard';
@@ -22,5 +30,10 @@ export class ReportsController {
   @Post('/create')
   createReport(@Body() body: CreateReportDto) {
     return this.service.create(body);
+  }
+
+  @Patch('/update')
+  updateReport(@Query('id') id: UUID, @Body() body: CreateReportDto) {
+    return this.service.update(id, body);
   }
 }

@@ -8,23 +8,15 @@ export class AuthService {
   constructor(private usersService: UsersService) {}
 
   async signup({ email, name, password }: CreateUserDto) {
-    const user = await this.usersService.findUserByEmailWithoutValidation(
-      email,
-    );
-
-    if (user) {
-      throw new BadRequestException('Ese email ya está registrado.');
-    }
-
     const hashedPassword = await hashPassword(password);
 
-    const newUser = await this.usersService.create({
+    const user = await this.usersService.create({
       email,
       name,
       password: hashedPassword,
     });
 
-    return newUser;
+    return user;
   }
 
   async signin(email: string, password: string) {

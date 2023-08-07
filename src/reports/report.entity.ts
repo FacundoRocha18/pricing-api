@@ -1,9 +1,10 @@
 import { UUID } from 'crypto';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from '../users/user.entity';
 
 @Entity('reports')
 export class Report {
-  @PrimaryGeneratedColumn('identity')
+  @PrimaryGeneratedColumn('uuid')
   id: UUID;
 
   @Column({ type: 'text' })
@@ -26,4 +27,7 @@ export class Report {
 
   @Column()
   price: number;
+
+  @ManyToOne(() => User, (user) => user.reports)
+  user: User;
 }

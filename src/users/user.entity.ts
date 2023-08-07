@@ -1,5 +1,12 @@
 import { UUID } from 'crypto';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  AfterInsert,
+} from 'typeorm';
+import { Report } from '../reports/report.entity';
 
 @Entity('users')
 export class User {
@@ -14,4 +21,12 @@ export class User {
 
   @Column({ type: 'text' })
   password: string;
+
+  @OneToMany(() => Report, (report) => report.user)
+  reports: Report[];
+
+  @AfterInsert()
+  logInsert() {
+    console.log('Created user with id: ', this.id);
+  }
 }
