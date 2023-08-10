@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { compareHashedPassword, hashPassword } from '../utils';
 import { CreateUserDto } from '../users/dto/create-user.dto';
@@ -25,7 +29,7 @@ export class AuthService {
     );
 
     if (!user) {
-      throw new BadRequestException(
+      throw new NotFoundException(
         'No existe un usuario registrado con ese email.',
       );
     }

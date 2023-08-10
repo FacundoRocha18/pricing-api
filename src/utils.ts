@@ -18,8 +18,8 @@ export const compareHashedPassword = async (
   password: string,
 ): Promise<boolean> => {
   const [storedSalt, storedHash] = storedPassword.split('.');
-
+  console.log(storedSalt, storedHash);
   const hash = (await hashPassword(password, storedSalt)).split('.')[1];
-
+  console.log(hash, storedHash);
   return storedHash === hash;
 };

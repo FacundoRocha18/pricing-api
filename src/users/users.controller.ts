@@ -42,7 +42,7 @@ export class UsersController {
     return await this.usersService.create(body);
   }
 
-  @Patch('/create')
+  @Patch('/update')
   async updateUser(
     @Query('id') id: UUID,
     @Body() body: Partial<CreateUserDto>,

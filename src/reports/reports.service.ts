@@ -4,6 +4,7 @@ import { Report } from './report.entity';
 import { Repository } from 'typeorm';
 import { UUID } from 'crypto';
 import { CreateReportDto } from './dto/create-report.dto';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class ReportsService {
@@ -32,8 +33,10 @@ export class ReportsService {
     return reports;
   }
 
-  async create(body: CreateReportDto): Promise<Report> {
+  async create(body: CreateReportDto, user: User): Promise<Report> {
     const report = this.repository.create(body);
+
+    report.user = user;
 
     return this.repository.save(report);
   }
