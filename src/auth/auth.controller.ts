@@ -23,6 +23,14 @@ export class AuthController {
     return user;
   }
 
+  /**
+   * Issue #2 error when comparing received and stored passwords
+   * Found a bug when trying to signin, when comparing both received and stored
+   * passwords after hashing them, the passwords appear to be different but aren't.
+   * Returns 400 Bad Request
+   * TODO: Fix signin bug
+   */
+
   @Post('/signin')
   async signIn(
     @Body() { email, password }: Partial<CreateUserDto>,

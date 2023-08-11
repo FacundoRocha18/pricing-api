@@ -32,9 +32,9 @@ export class AuthService {
       );
     }
 
-    const compareResult = await compareHashedPassword(user.password, password);
+    const result = await compareHashedPassword(user.password, password);
 
-    if (!compareResult) {
+    if (!result) {
       throw new BadRequestException('La contraseña ingresada es incorrecta.');
     }
 
