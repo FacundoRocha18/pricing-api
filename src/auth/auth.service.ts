@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { compareHashedPassword, hashPassword } from '../utils';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { compareHashedPassword, hashPassword } from '../utils';
 
 @Injectable()
 export class AuthService {
@@ -24,9 +24,7 @@ export class AuthService {
   }
 
   async signin(email: string, password: string) {
-    const user = await this.usersService.findUserByEmailWithoutValidation(
-      email,
-    );
+    const user = await this.usersService.findUserByEmailNoValidation(email);
 
     if (!user) {
       throw new NotFoundException(
@@ -37,7 +35,7 @@ export class AuthService {
     const compareResult = await compareHashedPassword(user.password, password);
 
     if (!compareResult) {
-      throw new BadRequestException('La contraseña es incorrecta');
+      throw new BadRequestException('La contraseña ingresada es incorrecta.');
     }
 
     return user;

@@ -6,6 +6,14 @@ import {
 } from '@nestjs/common';
 import { UsersService } from '../users.service';
 
+/**
+ * Issue #1: Session Token bug
+ * Found a bug in CurrentUserInterceptor that makes it imposible to signup if there was a previous
+ * unclosed session and the session cookie was saved into the HTTP client.
+ * It returns a 404 error saying that it wasn't possible to find the user
+ * TODO: Solve this bug
+ */
+
 @Injectable()
 export class CurrentUserInterceptor implements NestInterceptor {
   constructor(private usersService: UsersService) {}

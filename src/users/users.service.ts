@@ -21,7 +21,7 @@ export class UsersService {
     const user = await this.repository.findOneBy({ id });
 
     if (!user) {
-      throw new NotFoundException('No se encontró el usuario');
+      throw new NotFoundException('No se encontró el usuario con id: ', id);
     }
 
     return user;
@@ -31,13 +31,16 @@ export class UsersService {
     const user = await this.repository.findOneBy({ email });
 
     if (!user) {
-      throw new NotFoundException('No se encontró el usuario');
+      throw new NotFoundException(
+        'No se encontró el usuario con email: ',
+        email,
+      );
     }
 
     return user;
   }
 
-  async findUserByEmailWithoutValidation(email: string): Promise<User> {
+  async findUserByEmailNoValidation(email: string): Promise<User> {
     return await this.repository.findOneBy({ email });
   }
 
@@ -52,14 +55,18 @@ export class UsersService {
   }
 
   async create({ email, name, password }: CreateUserDto): Promise<User> {
-    const storedUser = await this.findUserByEmailWithoutValidation(email);
+    const storedUser = await this.findUserByEmailNoValidation(email);
 
     if (storedUser) {
       throw new BadRequestException('Ese email ya está registrado.');
     }
 
-    const hash = await hashPassword(password);
-    const user = this.repository.create({ email, name, password: hash });
+    const hashedPassword = await hashPassword(password);
+    const user = this.repository.create({
+      email,
+      name,
+      password: hashedPassword,
+    });
 
     return this.repository.save(user);
   }
