@@ -6,6 +6,7 @@ import { UsersService } from '../users/users.service';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CurrentUserInterceptor } from '../users/interceptors/current-user.interceptor';
 import { AuthService } from './auth.service';
+import { PasswordService } from './password.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
@@ -13,6 +14,7 @@ import { AuthService } from './auth.service';
   providers: [
     UsersService,
     AuthService,
+    PasswordService,
     {
       provide: APP_INTERCEPTOR,
       useClass: CurrentUserInterceptor,

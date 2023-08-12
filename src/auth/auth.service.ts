@@ -14,16 +14,8 @@ export class AuthService {
     private passwordService: PasswordService,
   ) {}
 
-  async signup({ email, name, password }: CreateUserDto) {
-    const hashedPassword = await this.passwordService.hash(password);
-
-    const user = await this.usersService.create({
-      email,
-      name,
-      password: hashedPassword,
-    });
-
-    return user;
+  async signup(data: CreateUserDto) {
+    return await this.usersService.create(data);
   }
 
   async signin(email: string, password: string) {
@@ -31,7 +23,7 @@ export class AuthService {
 
     if (!user) {
       throw new NotFoundException(
-        'No existe un usuario registrado con ese email.',
+        'No existe un usuario registrado con el email: ' + email,
       );
     }
 
