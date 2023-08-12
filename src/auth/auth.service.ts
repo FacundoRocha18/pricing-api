@@ -5,14 +5,17 @@ import {
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
-import { compareHashedPassword, hashPassword } from '../utils';
+import { PasswordService } from './password.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private passwordService: PasswordService,
+  ) {}
 
   async signup({ email, name, password }: CreateUserDto) {
-    const hashedPassword = await hashPassword(password);
+    const hashedPassword = await this.passwordService.hash(password);
 
     const user = await this.usersService.create({
       email,
@@ -32,7 +35,7 @@ export class AuthService {
       );
     }
 
-    const result = await compareHashedPassword(user.password, password);
+    const result = await this.passwordService.compare(user.password, password);
 
     if (!result) {
       throw new BadRequestException('La contraseña ingresada es incorrecta.');

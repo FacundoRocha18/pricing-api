@@ -3,7 +3,7 @@ import { UsersController } from '../users.controller';
 import { UsersService } from '../users.service';
 import { UUID, randomUUID } from 'crypto';
 import { User } from '../user.entity';
-import { hashPassword } from '../../utils';
+import { hashPassword } from '../../auth/password.service';
 
 describe('Tests for UsersController', () => {
   let controller: UsersController;

@@ -4,7 +4,7 @@ import { AuthService } from '../auth.service';
 import { User } from '../../users/user.entity';
 import { UsersService } from '../../users/users.service';
 import { UUID, randomUUID } from 'crypto';
-import { hashPassword } from '../../utils';
+import { hashPassword } from '../password.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 describe('Tests on AuthController', () => {

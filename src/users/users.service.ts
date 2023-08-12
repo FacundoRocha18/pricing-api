@@ -8,7 +8,7 @@ import { UUID } from 'crypto';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
-import { hashPassword } from '../utils';
+import { hashPassword } from '../auth/password.service';
 
 @Injectable()
 export class UsersService {
