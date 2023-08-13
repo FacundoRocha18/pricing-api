@@ -34,9 +34,10 @@ export class ReportsService {
   }
 
   async create(body: CreateReportDto, user: User): Promise<Report> {
-    const report = this.repository.create(body);
-
-    report.user = user;
+    const report = this.repository.create({
+      ...body,
+      user,
+    });
 
     return this.repository.save(report);
   }

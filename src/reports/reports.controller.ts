@@ -13,6 +13,9 @@ import { AuthGuard } from '../guards/auth.guard';
 import { UUID } from 'crypto';
 import { CurrentUser } from 'src/users/decorators/current-user.decorator';
 import { User } from 'src/users/user.entity';
+import { Serialize } from '../interceptors/serialize.interceptor';
+import { ReportDto } from './dto/report.dto';
+import { ApproveReportDto } from './dto/approve-report.dto';
 
 @Controller('reports')
 @UseGuards(AuthGuard)
@@ -30,8 +33,14 @@ export class ReportsController {
   }
 
   @Post('/create')
+  @Serialize(ReportDto)
   createReport(@Body() body: CreateReportDto, @CurrentUser() user: User) {
     return this.service.create(body, user);
+  }
+
+  @Patch('/approve')
+  approveReport(@Query('id') id: UUID, @Body() body: ApproveReportDto) {
+    return this.service.update(id, body);
   }
 
   @Patch('/update')
