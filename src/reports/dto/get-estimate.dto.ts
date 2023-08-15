@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsNumber,
   IsString,
@@ -7,31 +8,31 @@ import {
   IsLatitude,
 } from 'class-validator';
 
-export class CreateReportDto {
+export class GetEstimateDto {
   @IsString()
   maker: string;
 
   @IsString()
   model: string;
 
+  @Transform(({ value }) => parseInt(value))
   @IsNumber()
   @Min(1900)
   year: number;
 
-  @IsNumber({ maxDecimalPlaces: 2 })
+  @Transform(({ value }) => parseInt(value))
+  @IsNumber()
   @IsLongitude()
   lng: number;
 
-  @IsNumber({ maxDecimalPlaces: 2 })
+  @Transform(({ value }) => parseFloat(value))
+  @IsNumber()
   @IsLatitude()
   lat: number;
 
+  @Transform(({ value }) => parseFloat(value))
   @IsNumber()
   @Min(1)
   @Max(1000000)
   kilometers: number;
-
-  @IsNumber({ maxDecimalPlaces: 2 })
-  @Min(1)
-  price: number;
 }

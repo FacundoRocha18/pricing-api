@@ -5,6 +5,7 @@ import { UUID } from 'crypto';
 import { CreateReportDto } from './dto/create-report.dto';
 import { Report } from './report.entity';
 import { User } from '../users/user.entity';
+import { GetEstimateDto } from './dto/get-estimate.dto';
 
 @Injectable()
 export class ReportsService {
@@ -27,10 +28,25 @@ export class ReportsService {
     const reports = await this.repository.find();
 
     if (reports.length < 0) {
-      throw new NotFoundException('No se encuentran reportes guardados');
+      throw new NotFoundException('No se encuentraron reportes guardados');
     }
 
     return reports;
+  }
+
+  createEstimate({ maker, model, lng, lat, year, kilometers }: GetEstimateDto) {
+    return this.repository
+      .createQueryBuilder()
+      .select('AVG(price)', 'price')
+      .where('maker = :maker', { maker })
+      .andWhere('model = :model', { model })
+      .andWhere('lng - :lng BETWEEN -5 AND 5', { lng })
+      .andWhere('lat - :lat BETWEEN -5 AND 5', { lat })
+      .andWhere('year - :year BETWEEN -3 AND 3', { year })
+      .orderBy('ABS(kilometers - :kilometers)', 'DESC')
+      .setParameters({ kilometers })
+      .limit(3)
+      .getRawOne();
   }
 
   async create(body: CreateReportDto, user: User): Promise<Report> {

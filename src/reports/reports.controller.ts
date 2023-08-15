@@ -17,6 +17,7 @@ import { Serialize } from '../interceptors/serialize.interceptor';
 import { ReportDto } from './dto/report.dto';
 import { ApproveReportDto } from './dto/approve-report.dto';
 import { AdminGuard } from '../guards/admin.guard';
+import { GetEstimateDto } from './dto/get-estimate.dto';
 
 @Controller('reports')
 @UseGuards(AuthGuard)
@@ -31,6 +32,11 @@ export class ReportsController {
   @Get('/list')
   listReports() {
     return this.service.listAll();
+  }
+
+  @Get('/estimated')
+  getEstimateValue(@Query() query: GetEstimateDto) {
+    return this.service.createEstimate(query);
   }
 
   @Post('/create')
