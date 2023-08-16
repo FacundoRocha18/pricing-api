@@ -34,13 +34,9 @@ export class ReportsController {
     return this.service.listAll();
   }
 
-  @Get('/estimated')
+  @Get()
   async getEstimateValue(@Query() query: GetEstimateDto) {
-    const estimatedValue = await this.service.createEstimate(query);
-
-    console.log(estimatedValue);
-
-    return estimatedValue;
+    return await this.service.createEstimate(query);
   }
 
   @Post('/create')

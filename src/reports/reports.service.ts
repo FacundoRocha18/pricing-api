@@ -42,7 +42,7 @@ export class ReportsService {
     year,
     kilometers,
   }: GetEstimateDto) {
-    const value = await this.repository
+    return await this.repository
       .createQueryBuilder('report')
       .select('AVG(price)', 'price')
       .where('maker = :maker', { maker })
@@ -50,14 +50,11 @@ export class ReportsService {
       .andWhere('lng - :lng BETWEEN -5 AND 5', { lng })
       .andWhere('lat - :lat BETWEEN -5 AND 5', { lat })
       .andWhere('year - :year BETWEEN -3 AND 3', { year })
-      .orderBy('report.kilometers', 'DESC')
+      .orderBy('ABS(kilometers - :kilometers)', 'DESC')
       .setParameters({ kilometers })
       .groupBy('report.kilometers')
       .limit(3)
       .getRawOne();
-
-    console.log(value);
-    return value;
   }
 
   async create(body: CreateReportDto, user: User): Promise<Report> {
