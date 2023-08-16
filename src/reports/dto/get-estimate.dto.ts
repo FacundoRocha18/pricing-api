@@ -30,7 +30,7 @@ export class GetEstimateDto {
   @IsLatitude()
   lat: number;
 
-  @Transform(({ value }) => parseFloat(value))
+  @Transform(({ value }) => parseInt(value))
   @IsNumber()
   @Min(1)
   @Max(1000000)
