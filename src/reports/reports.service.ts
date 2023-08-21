@@ -41,7 +41,7 @@ export class ReportsService {
     lat,
     year,
     kilometers,
-  }: GetEstimateDto) {
+  }: GetEstimateDto): Promise<number> {
     return await this.repository
       .createQueryBuilder('report')
       .select('AVG(price)', 'price')

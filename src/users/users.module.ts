@@ -12,7 +12,7 @@ import { CurrentUserMiddleware } from './middlewares/current-user.middleware';
   providers: [UsersService, PasswordService],
 })
 export class UsersModule {
-  configure(consumer: MiddlewareConsumer) {
+  configure(consumer: MiddlewareConsumer): void {
     consumer.apply(CurrentUserMiddleware).forRoutes('*');
   }
 }

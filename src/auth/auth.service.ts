@@ -6,6 +6,7 @@ import {
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { PasswordService } from './password.service';
+import { User } from '../users/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -14,11 +15,11 @@ export class AuthService {
     private passwordService: PasswordService,
   ) {}
 
-  async signup(data: CreateUserDto) {
+  async signup(data: CreateUserDto): Promise<User> {
     return await this.usersService.create(data);
   }
 
-  async signin(email: string, password: string) {
+  async signin(email: string, password: string): Promise<User> {
     const user = await this.usersService.findUserByEmailNoValidation(email);
 
     if (!user) {

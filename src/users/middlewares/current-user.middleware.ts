@@ -11,7 +11,11 @@ interface CustomRequest extends Request {
 export class CurrentUserMiddleware implements NestMiddleware {
   constructor(private usersService: UsersService) {}
 
-  async use(req: CustomRequest, res: Response, next: NextFunction) {
+  async use(
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     const { id } = req.session || {};
 
     if (id) {
