@@ -29,7 +29,7 @@ export class User {
   reports: Report[];
 
   @AfterInsert()
-  logInsert() {
+  logInsert(): void {
     console.log('Created user with id: ', this.id);
   }
 }
