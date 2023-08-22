@@ -5,7 +5,9 @@ import {
   Max,
   IsLongitude,
   IsLatitude,
+  IsArray,
 } from 'class-validator';
+import { Image } from '../../images/image.entity';
 
 export class CreateReportDto {
   @IsString()
@@ -34,4 +36,7 @@ export class CreateReportDto {
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(1)
   price: number;
+
+  @IsArray()
+  images: Image[];
 }

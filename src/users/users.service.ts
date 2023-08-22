@@ -72,7 +72,7 @@ export class UsersService {
     return this.repository.save(user);
   }
 
-  async update(id: UUID, attrs: Partial<User>) {
+  async update(id: UUID, attrs: Partial<User>): Promise<User> {
     const user = await this.findById(id);
 
     if (!user) {

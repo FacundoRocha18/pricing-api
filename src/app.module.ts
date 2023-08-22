@@ -8,6 +8,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/user.entity';
 import { Report } from './reports/report.entity';
 import { AuthModule } from './auth/auth.module';
+import { ImagesModule } from './images/images.module';
+import { Image } from './images/image.entity';
 const cookieSession = require('cookie-session');
 
 @Module({
@@ -15,6 +17,7 @@ const cookieSession = require('cookie-session');
     UsersModule,
     ReportsModule,
     AuthModule,
+    ImagesModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
@@ -28,13 +31,12 @@ const cookieSession = require('cookie-session');
           host: config.get<string>('DATABASE_HOST'),
           password: config.get<string>('DATABASE_PWD'),
           database: 'postgres',
-          entities: [User, Report],
+          entities: [User, Report, Image],
           synchronize: true, // Don't use synchronize: true in production
         };
       },
     }),
   ],
-  controllers: [],
   providers: [
     {
       provide: APP_PIPE,

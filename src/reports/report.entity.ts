@@ -1,6 +1,14 @@
 import { UUID } from 'crypto';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  AfterInsert,
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from '../users/user.entity';
+import { Image } from '../images/image.entity';
 
 @Entity('reports')
 export class Report {
@@ -33,4 +41,12 @@ export class Report {
 
   @ManyToOne(() => User, (user) => user.reports)
   user: User;
+
+  @OneToMany(() => Image, (image) => image.report)
+  images: Image[];
+
+  @AfterInsert()
+  logInsert(): void {
+    console.log('Created report with id: ', this.id);
+  }
 }

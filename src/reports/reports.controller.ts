@@ -18,6 +18,7 @@ import { ReportDto } from './dto/report.dto';
 import { ApproveReportDto } from './dto/approve-report.dto';
 import { AdminGuard } from '../guards/admin.guard';
 import { GetEstimateDto } from './dto/get-estimate.dto';
+import { Report } from './report.entity';
 
 @Controller('reports')
 @UseGuards(AuthGuard)
@@ -41,7 +42,10 @@ export class ReportsController {
 
   @Post('/create')
   @Serialize(ReportDto)
-  createReport(@Body() body: CreateReportDto, @CurrentUser() user: User) {
+  createReport(
+    @Body() body: CreateReportDto,
+    @CurrentUser() user: User,
+  ): Promise<Report> {
     return this.service.create(body, user);
   }
 
