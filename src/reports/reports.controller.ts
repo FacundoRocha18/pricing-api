@@ -26,17 +26,17 @@ export class ReportsController {
   constructor(private readonly service: ReportsService) {}
 
   @Get('/find')
-  findReport(@Query('id') id: UUID) {
+  findReport(@Query('id') id: UUID): Promise<Report> {
     return this.service.findOne(id);
   }
 
   @Get('/list')
-  listReports() {
+  listReports(): Promise<Report[]> {
     return this.service.listAll();
   }
 
   @Get()
-  async getEstimateValue(@Query() query: GetEstimateDto) {
+  async getEstimateValue(@Query() query: GetEstimateDto): Promise<number> {
     return await this.service.createEstimate(query);
   }
 
@@ -51,12 +51,18 @@ export class ReportsController {
 
   @UseGuards(AdminGuard)
   @Patch('/approve')
-  approveReport(@Query('id') id: UUID, @Body() body: ApproveReportDto) {
+  approveReport(
+    @Query('id') id: UUID,
+    @Body() body: ApproveReportDto,
+  ): Promise<Report> {
     return this.service.update(id, body);
   }
 
   @Patch('/update')
-  updateReport(@Query('id') id: UUID, @Body() body: CreateReportDto) {
+  updateReport(
+    @Query('id') id: UUID,
+    @Body() body: CreateReportDto,
+  ): Promise<Report> {
     return this.service.update(id, body);
   }
 }

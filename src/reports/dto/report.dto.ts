@@ -1,6 +1,7 @@
 import { UUID } from 'typeorm/driver/mongodb/bson.typings';
 import { Expose, Transform } from 'class-transformer';
 import { Image } from '../../images/image.entity';
+import { User } from '../../users/user.entity';
 
 export class ReportDto {
   @Expose()
