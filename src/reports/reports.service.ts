@@ -17,17 +17,22 @@ export class ReportsService {
   ) {}
 
   async findOne(id: UUID): Promise<Report> {
-    const report = await this.repository.findOneBy({ id });
+    const reports = await this.repository.find({
+      where: { id },
+      relations: { user: true, images: true },
+    });
 
-    if (!report) {
+    if (reports.length === 0) {
       throw new NotFoundException('No se encontró el reporte');
     }
 
-    return report;
+    return reports[0];
   }
 
   async listAll(): Promise<Report[]> {
-    const reports = await this.repository.find();
+    const reports = await this.repository.find({
+      relations: { user: true, images: true },
+    });
 
     if (reports.length < 0) {
       throw new NotFoundException('No se encuentraron reportes guardados');

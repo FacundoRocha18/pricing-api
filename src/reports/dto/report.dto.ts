@@ -35,6 +35,7 @@ export class ReportDto {
   @Expose()
   userId: UUID;
 
+  @Transform(({ obj }) => obj.images[0].content)
   @Expose()
   images: Image[];
 }
