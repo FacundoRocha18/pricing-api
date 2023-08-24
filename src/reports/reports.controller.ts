@@ -22,6 +22,7 @@ import { Report } from './report.entity';
 
 @Controller('reports')
 @UseGuards(AuthGuard)
+@Serialize(ReportDto)
 export class ReportsController {
   constructor(private readonly service: ReportsService) {}
 
@@ -41,7 +42,6 @@ export class ReportsController {
   }
 
   @Post('/create')
-  @Serialize(ReportDto)
   createReport(
     @Body() body: CreateReportDto,
     @CurrentUser() user: User,
