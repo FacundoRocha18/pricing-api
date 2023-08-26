@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
@@ -10,6 +10,7 @@ import { Report } from './reports/report.entity';
 import { AuthModule } from './auth/auth.module';
 import { ImagesModule } from './images/images.module';
 import { Image } from './images/image.entity';
+import { TransformInterceptor } from './interceptors/transform.interceptor';
 const cookieSession = require('cookie-session');
 
 @Module({
@@ -43,6 +44,10 @@ const cookieSession = require('cookie-session');
       useValue: new ValidationPipe({
         whitelist: true,
       }),
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
     },
   ],
 })

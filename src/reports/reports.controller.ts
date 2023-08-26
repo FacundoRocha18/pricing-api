@@ -6,6 +6,7 @@ import {
   Post,
   Query,
   UseGuards,
+  Response,
 } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { CreateReportDto } from './dto/create-report.dto';
@@ -19,10 +20,12 @@ import { ApproveReportDto } from './dto/approve-report.dto';
 import { AdminGuard } from '../guards/admin.guard';
 import { GetEstimateDto } from './dto/get-estimate.dto';
 import { Report } from './report.entity';
+import { IResponseData } from '../interfaces/responses';
+import { Response as ExpressResponse } from 'express';
+import { jsonc } from 'jsonc';
 
 @Controller('reports')
-@UseGuards(AuthGuard)
-@Serialize(ReportDto)
+//@UseGuards(AuthGuard)
 export class ReportsController {
   constructor(private readonly service: ReportsService) {}
 
@@ -32,8 +35,12 @@ export class ReportsController {
   }
 
   @Get('/list')
-  listReports(): Promise<Report[]> {
-    return this.service.listAll();
+  async listReports(
+    @Response({ passthrough: true }) res: ExpressResponse,
+  ): Promise<string> {
+    const reports = await this.service.listAll();
+    const json = jsonc.stringify(reports);
+    return json;
   }
 
   @Get()
