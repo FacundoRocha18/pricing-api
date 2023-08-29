@@ -33,9 +33,9 @@ export class ReportDto {
 
   @Transform(({ obj }) => obj.user.id)
   @Expose()
-  userId: UUID;
+  user_id: UUID;
 
-  @Transform(({ obj }) => obj.images[0].content)
+  @Transform(({ obj }) => obj.images)
   @Expose()
   images: Image[];
 }

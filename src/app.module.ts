@@ -10,7 +10,6 @@ import { Report } from './reports/report.entity';
 import { AuthModule } from './auth/auth.module';
 import { ImagesModule } from './images/images.module';
 import { Image } from './images/image.entity';
-import { TransformInterceptor } from './interceptors/transform.interceptor';
 const cookieSession = require('cookie-session');
 
 @Module({
@@ -44,10 +43,6 @@ const cookieSession = require('cookie-session');
       useValue: new ValidationPipe({
         whitelist: true,
       }),
-    },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: TransformInterceptor,
     },
   ],
 })
