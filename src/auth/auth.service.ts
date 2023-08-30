@@ -1,7 +1,7 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
@@ -31,8 +31,10 @@ export class AuthService {
     const result = await this.passwordService.compare(user.password, password);
 
     if (!result) {
-      throw new BadRequestException('La contraseña ingresada es incorrecta.');
+      throw new UnauthorizedException('La contraseña ingresada es incorrecta.');
     }
+
+    user.password = '';
 
     return user;
   }
