@@ -43,6 +43,15 @@ export class ReportsController {
     return await this.service.listAll(max, offset);
   }
 
+  @Get('/list')
+  async listReportsByCarName(
+    @Query('max') max: number,
+    @Query('offset') offset: number,
+    @Query('name') name: string,
+  ): Promise<Report[]> {
+    return await this.service.listAll(max, offset, name);
+  }
+
   @UseGuards(AuthGuard)
   @Get()
   async getEstimateValue(@Query() query: GetEstimateDto): Promise<number> {

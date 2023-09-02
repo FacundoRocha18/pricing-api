@@ -42,8 +42,13 @@ export class ReportsService {
     return reports;
   }
 
-  async listAll(max?: number, offset?: number): Promise<Report[]> {
+  async listAll(
+    max?: number,
+    offset?: number,
+    name?: string,
+  ): Promise<Report[]> {
     const reports = await this.repository.find({
+      where: { maker: name },
       relations: { user: true, images: true },
       take: max,
       skip: offset,
