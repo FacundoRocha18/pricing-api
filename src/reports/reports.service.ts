@@ -29,9 +29,24 @@ export class ReportsService {
     return reports[0];
   }
 
-  async listAll(): Promise<Report[]> {
+  async findByName(name: string): Promise<Report[]> {
+    const reports = await this.repository.find({
+      where: { maker: name },
+      relations: { user: true, images: true },
+    });
+
+    if (reports.length === 0) {
+      throw new NotFoundException('No se encontró el reporte');
+    }
+
+    return reports;
+  }
+
+  async listAll(max?: number, offset?: number): Promise<Report[]> {
     const reports = await this.repository.find({
       relations: { user: true, images: true },
+      take: max,
+      skip: offset,
     });
 
     if (reports.length < 0) {

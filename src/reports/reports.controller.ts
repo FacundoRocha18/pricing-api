@@ -21,7 +21,6 @@ import { GetEstimateDto } from './dto/get-estimate.dto';
 import { Report } from './report.entity';
 
 @Controller('reports')
-//@UseGuards(AuthGuard)
 @Serialize(ReportDto)
 export class ReportsController {
   constructor(private readonly service: ReportsService) {}
@@ -31,16 +30,26 @@ export class ReportsController {
     return this.service.findOne(id);
   }
 
-  @Get('/list')
-  async listReports(): Promise<Report[]> {
-    return await this.service.listAll();
+  @Get('/find')
+  findReportByCarName(@Query('name') name: string): Promise<Report[]> {
+    return this.service.findByName(name);
   }
 
+  @Get('/list')
+  async listReports(
+    @Query('max') max: number,
+    @Query('offset') offset: number,
+  ): Promise<Report[]> {
+    return await this.service.listAll(max, offset);
+  }
+
+  @UseGuards(AuthGuard)
   @Get()
   async getEstimateValue(@Query() query: GetEstimateDto): Promise<number> {
     return await this.service.createEstimate(query);
   }
 
+  @UseGuards(AuthGuard)
   @Post('/create')
   createReport(
     @Body() body: CreateReportDto,
@@ -49,6 +58,7 @@ export class ReportsController {
     return this.service.create(body, user);
   }
 
+  @UseGuards(AuthGuard)
   @UseGuards(AdminGuard)
   @Patch('/approve')
   approveReport(
@@ -58,6 +68,7 @@ export class ReportsController {
     return this.service.update(id, body);
   }
 
+  @UseGuards(AuthGuard)
   @Patch('/update')
   updateReport(
     @Query('id') id: UUID,
