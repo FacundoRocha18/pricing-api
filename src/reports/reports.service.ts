@@ -69,9 +69,7 @@ export class ReportsService {
     const reports = await this.repository
       .createQueryBuilder('report')
       .select()
-      .having('report.maker = :maker', { maker: name })
-      .orHaving('report.model = :model', { model: name })
-      .groupBy('report.id')
+      .where('report.maker = :maker', { maker: name })
       .limit(max)
       .offset(offset)
       .getRawMany();
