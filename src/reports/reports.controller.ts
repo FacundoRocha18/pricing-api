@@ -49,7 +49,7 @@ export class ReportsController {
     @Query('offset') offset: number,
     @Query('name') name: string,
   ): Promise<Report[]> {
-    return await this.service.listAll(max, offset, name);
+    return await this.service.listByName(max, offset, name);
   }
 
   @UseGuards(AuthGuard)

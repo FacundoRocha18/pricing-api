@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, ILike, Repository } from 'typeorm';
 import { UUID } from 'crypto';
 import { CreateReportDto } from './dto/create-report.dto';
 import { Report } from './report.entity';
@@ -53,6 +53,28 @@ export class ReportsService {
       take: max,
       skip: offset,
     });
+
+    if (reports.length < 0) {
+      throw new NotFoundException('No se encuentraron reportes guardados');
+    }
+
+    return reports;
+  }
+
+  async listByName(
+    max?: number,
+    offset?: number,
+    name?: string,
+  ): Promise<Report[]> {
+    const reports = await this.repository
+      .createQueryBuilder('report')
+      .select()
+      .having('report.maker = :maker', { maker: name })
+      .orHaving('report.model = :model', { model: name })
+      .groupBy('report.id')
+      .limit(max)
+      .offset(offset)
+      .getRawMany();
 
     if (reports.length < 0) {
       throw new NotFoundException('No se encuentraron reportes guardados');
