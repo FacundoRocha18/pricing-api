@@ -43,7 +43,7 @@ export class ReportsController {
     return await this.service.listAll(max, offset);
   }
 
-  @Get('/list')
+  @Get('/listBy')
   async listReportsByCarName(
     @Query('max') max: number,
     @Query('offset') offset: number,
